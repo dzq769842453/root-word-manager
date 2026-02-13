@@ -72,6 +72,12 @@
                 <span>词根审核</span>
               </template>
             </el-menu-item>
+            <el-menu-item v-if="userInfo.role === 'admin'" index="/user/management">
+              <el-icon><user /></el-icon>
+              <template #title>
+                <span>用户管理</span>
+              </template>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main class="main-content" :class="{ 'main-content-expanded': sidebarCollapsed || isMobile && !sidebarVisible }">
@@ -90,7 +96,7 @@
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowDown, Menu, Plus, Edit, Check } from '@element-plus/icons-vue'
+import { ArrowDown, Menu, Plus, Edit, Check, User } from '@element-plus/icons-vue'
 
 export default {
   name: 'App',
@@ -98,6 +104,7 @@ export default {
     ArrowDown,
     Menu,
     Plus,
+    User,
     Edit,
     Check
   },

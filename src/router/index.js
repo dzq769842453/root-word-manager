@@ -6,6 +6,7 @@ const RootWordList = () => import('../views/RootWordList.vue')
 const RootWordApply = () => import('../views/RootWordApply.vue')
 const DDLCheck = () => import('../views/DDLCheck.vue')
 const RootWordAudit = () => import('../views/RootWordAudit.vue')
+const UserManagement = () => import('../views/UserManagement.vue')
 
 // 路由配置
 const routes = [
@@ -37,6 +38,12 @@ const routes = [
     path: '/root-word/audit',
     name: 'RootWordAudit',
     component: RootWordAudit,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/user/management',
+    name: 'UserManagement',
+    component: UserManagement,
     meta: { requiresAuth: true, requiresAdmin: true }
   },
   // 重定向到登录页面

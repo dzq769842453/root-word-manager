@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
-from app.api import auth, root_word
+from app.api import auth, root_word, user
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -25,6 +25,7 @@ app.add_middleware(
 # 注册路由
 app.include_router(auth.router, prefix="/api/auth", tags=["认证"])
 app.include_router(root_word.router, prefix="/api/root-word", tags=["词根管理"])
+app.include_router(user.router, prefix="/api/user", tags=["用户管理"])
 
 # 根路径
 @app.get("/")
