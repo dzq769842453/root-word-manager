@@ -22,10 +22,9 @@
           <div class="logo">词根管理工具</div>
         </div>
         <div class="user-info">
-          <span class="username">{{ userInfo.username }}</span>
           <el-dropdown>
             <span class="el-dropdown-link">
-              {{ userInfo.role === 'admin' ? '管理员' : '普通用户' }}
+              {{ userInfo.username }}
               <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
             <template #dropdown>
@@ -67,7 +66,7 @@
                 <span>DDL 校验</span>
               </template>
             </el-menu-item>
-            <el-menu-item index="/root-word/audit">
+            <el-menu-item v-if="userInfo.role === 'admin'" index="/root-word/audit">
               <el-icon><check /></el-icon>
               <template #title>
                 <span>词根审核</span>
