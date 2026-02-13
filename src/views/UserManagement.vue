@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查询</el-button>
-          <el-button @click="resetForm">重置</el-button>
+          <el-button @click="resetSearchForm">重置</el-button>
         </el-form-item>
       </el-form>
       
@@ -256,8 +256,8 @@ export default {
       getUsers()
     }
     
-    // 重置表单
-    const resetForm = () => {
+    // 重置搜索表单
+    const resetSearchForm = () => {
       searchForm.value.username = ''
       pagination.value.currentPage = 1
       getUsers()
@@ -383,10 +383,9 @@ export default {
       resetDialogVisible,
       resetLoading,
       resetFormRef,
-      resetForm,
       resetRules,
+      resetSearchForm,
       handleSearch,
-      resetForm,
       handleSizeChange,
       handleCurrentChange,
       handleCreateUser,
