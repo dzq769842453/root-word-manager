@@ -50,18 +50,50 @@ async def apply_root_word(
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    # 校验词根名称是否已存在（未删除状态）
+    # 查询是否已存在该词根（包括已删除的）
     existing_root_word = db.query(RootWord).filter(
-        and_(
-            RootWord.word_name == root_word_data.word_name,
-            RootWord.delete_flag == 0
-        )
+        RootWord.word_name == root_word_data.word_name
     ).first()
+    
     if existing_root_word:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="词根名称已存在"
-        )
+        # 如果词根已废弃（delete_flag=1），则恢复并更新为待审核状态
+        if existing_root_word.delete_flag == 1 or existing_root_word.status == RootWordStatus.DISCARDED:
+            existing_root_word.mysql_type = root_word_data.mysql_type
+            existing_root_word.doris_type = root_word_data.doris_type
+            existing_root_word.clickhouse_type = root_word_data.clickhouse_type
+            existing_root_word.remark = root_word_data.remark
+            existing_root_word.status = RootWordStatus.PENDING_AUDIT
+            existing_root_word.apply_user = current_user.get("username")
+            existing_root_word.apply_time = datetime.utcnow()
+            existing_root_word.delete_flag = 0
+            existing_root_word.audit_user = None
+            existing_root_word.audit_time = None
+            existing_root_word.audit_remark = None
+            db.commit()
+            
+            # 插入操作日志
+            operation_log = RootWordOperationLog(
+                word_id=existing_root_word.id,
+                operation_type=OperationType.CREATE,
+                operation_user=current_user.get("username"),
+                operation_content=f"重新申请已废弃词根：{root_word_data.word_name}"
+            )
+            db.add(operation_log)
+            db.commit()
+            
+            return {
+                "code": 200,
+                "msg": "词根重新申请成功，请等待审核",
+                "data": {
+                    "word_id": existing_root_word.id
+                }
+            }
+        else:
+            # 词根已存在且未废弃
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="词根名称已存在"
+            )
     
     # 校验类型格式是否符合各引擎规范
     # 这里可以添加更详细的类型校验逻辑
