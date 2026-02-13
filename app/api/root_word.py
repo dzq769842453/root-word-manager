@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from datetime import datetime
-from typing import List
+from typing import List, Optional
+from functools import lru_cache
 from app.database import get_db
 from app.security import get_current_user, check_admin_permission
 from app.models.root_word import RootWord, RootWordStatus
@@ -15,6 +16,32 @@ import sqlparse
 import re
 
 router = APIRouter()
+
+# 缓存：获取所有词根（用于DDL校验）
+@lru_cache(maxsize=1)
+def get_all_root_words_cached():
+    """缓存所有词根，5分钟过期"""
+    from app.database import SessionLocal
+    db = SessionLocal()
+    try:
+        root_words = db.query(RootWord).filter(
+            and_(
+                RootWord.delete_flag == 0,
+                RootWord.status == RootWordStatus.EFFECTIVE
+            )
+        ).all()
+        return [
+            {
+                "word_name": rw.word_name,
+                "mysql_type": rw.mysql_type,
+                "doris_type": rw.doris_type,
+                "clickhouse_type": rw.clickhouse_type,
+                "remark": rw.remark
+            }
+            for rw in root_words
+        ]
+    finally:
+        db.close()
 
 # 创建词根申请
 @router.post("/apply", response_model=dict)
