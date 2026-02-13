@@ -4,11 +4,12 @@
       <template #header>
         <div class="card-header">
           <span>词根审核</span>
+          <span v-if="!isAdmin" class="view-only-tag">仅查看模式</span>
         </div>
       </template>
-      
-      <!-- 批量操作工具栏 -->
-      <div class="batch-toolbar" v-if="pendingRootWords.length > 0">
+
+      <!-- 批量操作工具栏 - 仅管理员可见 -->
+      <div class="batch-toolbar" v-if="isAdmin && pendingRootWords.length > 0">
         <el-checkbox
           v-model="selectAll"
           @change="handleSelectAll"
@@ -28,15 +29,15 @@
           </el-button>
         </el-button-group>
       </div>
-      
+
       <!-- 待审核词根列表 -->
-      <el-table 
-        :data="pendingRootWords" 
-        style="width: 100%" 
+      <el-table
+        :data="pendingRootWords"
+        style="width: 100%"
         border
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
+        <el-table-column v-if="isAdmin" type="selection" width="55" />
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="word_name" label="词根名称" width="150" />
         <el-table-column prop="mysql_type" label="MySQL 类型" width="120" />
@@ -44,7 +45,7 @@
         <el-table-column prop="clickhouse_type" label="ClickHouse 类型" width="150" />
         <el-table-column prop="apply_user" label="申请人" width="120" />
         <el-table-column prop="apply_time" label="申请时间" width="180" />
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column v-if="isAdmin" label="操作" width="200" fixed="right">
           <template #default="scope">
             <el-button type="primary" size="small" @click="handleAudit(scope.row, 'pass')">通过</el-button>
             <el-button type="danger" size="small" @click="handleAudit(scope.row, 'reject')">驳回</el-button>
@@ -122,13 +123,23 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { listRootWord, auditRootWord } from '../api/rootWord'
 
 export default {
   name: 'RootWordAudit',
   setup() {
+    // 判断是否为管理员
+    const isAdmin = computed(() => {
+      const userStr = localStorage.getItem('user')
+      if (userStr) {
+        const user = JSON.parse(userStr)
+        return user.role === 'admin'
+      }
+      return false
+    })
+
     const pendingRootWords = ref([])
     const auditDialogVisible = ref(false)
     const auditDialogTitle = ref('审核词根')
@@ -331,6 +342,7 @@ export default {
     })
     
     return {
+      isAdmin,
       pendingRootWords,
       auditDialogVisible,
       auditDialogTitle,
@@ -369,6 +381,16 @@ export default {
   width: 100%;
   display: flex;
   justify-content: flex-end;
+}
+
+/* 仅查看模式标签 */
+.view-only-tag {
+  font-size: 12px;
+  color: #909399;
+  background-color: #f4f4f5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
 }
 
 /* 批量操作工具栏 */

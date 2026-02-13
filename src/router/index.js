@@ -38,7 +38,7 @@ const routes = [
     path: '/root-word/audit',
     name: 'RootWordAudit',
     component: RootWordAudit,
-    meta: { requiresAuth: true, requiresAdmin: true }
+    meta: { requiresAuth: true }
   },
   {
     path: '/user/management',

@@ -67,7 +67,7 @@
                 <span>DDL 校验</span>
               </template>
             </el-menu-item>
-            <el-menu-item v-if="userInfo.role === 'admin'" index="/root-word/audit">
+            <el-menu-item index="/root-word/audit">
               <el-icon><check /></el-icon>
               <template #title>
                 <span>词根审核</span>
