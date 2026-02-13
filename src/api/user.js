@@ -1,36 +1,43 @@
-import request from './request'
+import axios from 'axios'
 
 // 创建用户
-export function createUser(data) {
-  return request({
-    url: '/user/create',
-    method: 'post',
-    data
-  })
+export const createUser = async (userData) => {
+  try {
+    const response = await axios.post('/api/user/create', userData)
+    return response.data
+  } catch (error) {
+    throw error.response?.data || error
+  }
 }
 
 // 获取用户列表
-export function getUserList(params) {
-  return request({
-    url: '/user/list',
-    method: 'get',
-    params
-  })
+export const getUserList = async (params) => {
+  try {
+    const response = await axios.get('/api/user/list', { params })
+    return response.data
+  } catch (error) {
+    throw error.response?.data || error
+  }
 }
 
 // 删除用户
-export function deleteUser(userId) {
-  return request({
-    url: `/user/delete/${userId}`,
-    method: 'delete'
-  })
+export const deleteUser = async (userId) => {
+  try {
+    const response = await axios.delete(`/api/user/delete/${userId}`)
+    return response.data
+  } catch (error) {
+    throw error.response?.data || error
+  }
 }
 
 // 重置密码
-export function resetPassword(userId, newPassword) {
-  return request({
-    url: `/user/reset-password/${userId}`,
-    method: 'post',
-    params: { new_password: newPassword }
-  })
+export const resetPassword = async (userId, newPassword) => {
+  try {
+    const response = await axios.post(`/api/user/reset-password/${userId}`, null, {
+      params: { new_password: newPassword }
+    })
+    return response.data
+  } catch (error) {
+    throw error.response?.data || error
+  }
 }
