@@ -15,9 +15,9 @@ class RootWord(Base):
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     word_name = Column(String(64), nullable=False, unique=True, comment="词根名称")
-    mysql_type = Column(String(32), nullable=False, comment="MySQL 数据类型")
-    doris_type = Column(String(32), nullable=False, comment="Doris 数据类型")
-    clickhouse_type = Column(String(32), nullable=False, comment="ClickHouse 数据类型")
+    mysql_type = Column(String(64), nullable=False, comment="MySQL 数据类型")
+    doris_type = Column(String(64), nullable=False, comment="Doris 数据类型")
+    clickhouse_type = Column(String(64), nullable=False, comment="ClickHouse 数据类型")
     remark = Column(String(256), nullable=True, comment="词根注释")
     status = Column(SQLEnum(RootWordStatus), nullable=False, default=RootWordStatus.PENDING_AUDIT, comment="词根状态")
     apply_user = Column(String(32), nullable=False, comment="申请人账号")

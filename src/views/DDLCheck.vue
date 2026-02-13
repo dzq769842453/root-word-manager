@@ -84,7 +84,7 @@
                     v-if="scope.row.status === '缺失词根'"
                     type="primary" 
                     size="small" 
-                    @click="handleApplyRootWord({word_name: scope.row.matched_root_word, suggested_type: scope.row.field_type})"
+                    @click="handleApplyRootWord({word_name: scope.row.matched_root_word, suggested_type: scope.row.field_type, field_comment: scope.row.field_comment})"
                   >
                     申请
                   </el-button>

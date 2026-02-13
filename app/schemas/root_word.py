@@ -12,9 +12,9 @@ class RootWordStatus(str, Enum):
 # 创建词根请求模型
 class RootWordCreate(BaseModel):
     word_name: str = Field(..., description="词根名称", min_length=1, max_length=64)
-    mysql_type: str = Field(..., description="MySQL 数据类型", min_length=1, max_length=32)
-    doris_type: str = Field(..., description="Doris 数据类型", min_length=1, max_length=32)
-    clickhouse_type: str = Field(..., description="ClickHouse 数据类型", min_length=1, max_length=32)
+    mysql_type: str = Field(..., description="MySQL 数据类型", min_length=1, max_length=64)
+    doris_type: str = Field(..., description="Doris 数据类型", min_length=1, max_length=64)
+    clickhouse_type: str = Field(..., description="ClickHouse 数据类型", min_length=1, max_length=64)
     remark: Optional[str] = Field(None, description="词根注释", max_length=256)
 
 # 词根响应模型
