@@ -58,12 +58,30 @@ export default {
         // 表单验证
         await loginFormRef.value.validate()
         
+        // 登录前强制清除旧的用户信息
+        console.log('=== 登录前清除旧数据 ===')
+        const oldUser = localStorage.getItem('user')
+        if (oldUser) {
+          console.log('旧用户信息:', JSON.parse(oldUser))
+        }
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        console.log('旧数据已清除')
+        
         // 调用登录接口
         const response = await login(loginForm.value.username, loginForm.value.password)
+        
+        console.log('=== 登录成功 ===')
+        console.log('新用户信息:', response.user)
+        console.log('用户角色:', response.user.role)
         
         // 保存 token 和用户信息
         localStorage.setItem('token', response.access_token)
         localStorage.setItem('user', JSON.stringify(response.user))
+        
+        // 验证存储是否正确
+        const storedUser = localStorage.getItem('user')
+        console.log('存储的用户信息:', JSON.parse(storedUser))
         
         // 跳转到词根列表页面
         router.push('/root-word/list')

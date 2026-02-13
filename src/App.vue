@@ -119,11 +119,15 @@ export default {
       const userStr = localStorage.getItem('user')
       if (userStr) {
         try {
-          return JSON.parse(userStr)
+          const user = JSON.parse(userStr)
+          console.log('当前用户信息:', user)
+          return user
         } catch (e) {
+          console.error('用户信息解析失败:', e)
           return {}
         }
       }
+      console.log('未找到用户信息')
       return {}
     })
     
@@ -156,8 +160,17 @@ export default {
     
     // 退出登录
     const logout = () => {
+      console.log('=== 退出登录 ===')
+      console.log('当前用户:', userInfo.value)
+      
+      // 清除所有用户相关数据
       localStorage.removeItem('token')
       localStorage.removeItem('user')
+      localStorage.clear() // 确保完全清除
+      
+      console.log('用户数据已清除')
+      
+      // 跳转到登录页面
       router.push('/login')
     }
     
