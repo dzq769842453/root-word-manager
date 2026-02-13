@@ -383,6 +383,7 @@ export default {
       resetDialogVisible,
       resetLoading,
       resetFormRef,
+      resetForm,
       resetRules,
       resetSearchForm,
       handleSearch,
