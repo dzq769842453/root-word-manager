@@ -30,6 +30,7 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
+                <el-dropdown-item v-if="userInfo.role === 'admin'" @click="goToUserManagement">用户管理</el-dropdown-item>
                 <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -70,12 +71,6 @@
               <el-icon><check /></el-icon>
               <template #title>
                 <span>词根审核</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item v-if="userInfo.role === 'admin'" index="/user/management">
-              <el-icon><user /></el-icon>
-              <template #title>
-                <span>用户管理</span>
               </template>
             </el-menu-item>
           </el-menu>
@@ -163,6 +158,11 @@ export default {
       router.push('/login')
     }
     
+    // 跳转到用户管理
+    const goToUserManagement = () => {
+      router.push('/user/management')
+    }
+    
     // 检查是否为移动设备
     const checkMobile = () => {
       isMobile.value = window.innerWidth < 768
@@ -195,7 +195,8 @@ export default {
       isMobile,
       handleMenuSelect,
       toggleSidebar,
-      logout
+      logout,
+      goToUserManagement
     }
   }
 }
