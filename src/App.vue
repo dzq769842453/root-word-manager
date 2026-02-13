@@ -105,7 +105,6 @@ export default {
   setup() {
     const router = useRouter()
     const activeMenu = ref('/root-word/list')
-    const userInfo = ref({})
     const sidebarCollapsed = ref(false)
     const sidebarVisible = ref(true)
     const isMobile = ref(false)
@@ -115,6 +114,19 @@ export default {
       return localStorage.getItem('token') !== null
     })
     
+    // 计算用户信息（实时从 localStorage 获取）
+    const userInfo = computed(() => {
+      const userStr = localStorage.getItem('user')
+      if (userStr) {
+        try {
+          return JSON.parse(userStr)
+        } catch (e) {
+          return {}
+        }
+      }
+      return {}
+    })
+    
     // 计算侧边栏宽度
     const sidebarWidth = computed(() => {
       if (isMobile.value) {
@@ -122,14 +134,6 @@ export default {
       }
       return sidebarCollapsed.value ? '64px' : '200px'
     })
-    
-    // 获取用户信息
-    const getUserInfo = () => {
-      const userStr = localStorage.getItem('user')
-      if (userStr) {
-        userInfo.value = JSON.parse(userStr)
-      }
-    }
     
     // 处理菜单选择
     const handleMenuSelect = (key) => {
@@ -172,9 +176,8 @@ export default {
       }
     }
     
-    // 挂载时获取用户信息和检查设备类型
+    // 挂载时检查设备类型
     onMounted(() => {
-      getUserInfo()
       checkMobile()
       window.addEventListener('resize', checkMobile)
     })
